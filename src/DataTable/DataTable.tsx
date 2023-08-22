@@ -82,6 +82,7 @@ function DataTable<T>(props: TableProps<T>): JSX.Element {
 		fixedHeader = defaultProps.fixedHeader,
 		fixedHeaderScrollHeight = defaultProps.fixedHeaderScrollHeight,
 		pagination = defaultProps.pagination,
+		topPagination=defaultProps.topPagination,
 		subHeader = defaultProps.subHeader,
 		subHeaderAlign = defaultProps.subHeaderAlign,
 		subHeaderWrap = defaultProps.subHeaderWrap,
@@ -158,7 +159,9 @@ function DataTable<T>(props: TableProps<T>): JSX.Element {
 	const { persistSelectedOnSort = false, persistSelectedOnPageChange = false } = paginationServerOptions;
 	const mergeSelections = !!(paginationServer && (persistSelectedOnPageChange || persistSelectedOnSort));
 	const enabledPagination = pagination && !progressPending && data.length > 0;
+	const enabledTopPagination = topPagination && !progressPending && data.length > 0;
 	const Pagination = paginationComponent || NativePagination;
+	const TopPagination = paginationComponent || NativePagination;
 
 	const currentTheme = React.useMemo(() => createStyles(customStyles, theme), [customStyles, theme]);
 	const wrapperProps = React.useMemo(() => ({ ...(direction !== 'auto' && { dir: direction }) }), [direction]);
@@ -357,7 +360,24 @@ function DataTable<T>(props: TableProps<T>): JSX.Element {
 					{subHeaderComponent}
 				</Subheader>
 			)}
-
+			{enabledTopPagination && (
+				<div>
+					<TopPagination
+						onChangePage={handleChangePage}
+						onChangeRowsPerPage={handleChangeRowsPerPage}
+						rowCount={paginationTotalRows || sortedData.length}
+						currentPage={currentPage}
+						rowsPerPage={rowsPerPage}
+						direction={direction}
+						paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+						paginationIconLastPage={paginationIconLastPage}
+						paginationIconFirstPage={paginationIconFirstPage}
+						paginationIconNext={paginationIconNext}
+						paginationIconPrevious={paginationIconPrevious}
+						paginationComponentOptions={paginationComponentOptions}
+					/>
+				</div>
+			)}
 			<ResponsiveWrapper
 				responsive={responsive}
 				fixedHeader={fixedHeader}
